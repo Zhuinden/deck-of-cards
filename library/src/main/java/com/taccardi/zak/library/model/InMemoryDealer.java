@@ -82,7 +82,7 @@ public class InMemoryDealer
     private Action topCardSuccess = () -> {
         Deck newDeck = deck.withDealtCard();
         dealOperations.accept(new DealOperation.TopCard(newDeck.getLastCardDealt()));
-        deck = newDeck;
+        setDeck(newDeck);
     };
 
     private Action topCardFailure = () -> {
@@ -113,7 +113,7 @@ public class InMemoryDealer
     private Action shuffleSuccess = () -> {
         Deck shuffled = deck.toShuffled();
         shuffleOperations.accept(new ShuffleOperation.Shuffled(shuffled));
-        deck = shuffled;
+        setDeck(shuffled);
     };
 
     private Action shuffleFailure = () -> {
@@ -144,7 +144,7 @@ public class InMemoryDealer
     private Action requestNewDeckSuccess = () -> {
         Deck fresh = Deck.FRESH_DECK;
         buildingDeckOperations.accept(new BuildingDeckOperation.Built(fresh));
-        deck = fresh;
+        setDeck(fresh);
     };
 
     private Action requestNewDeckFailure = () -> {
