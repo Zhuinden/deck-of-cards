@@ -38,7 +38,7 @@ class QuantityStringsText(val cardsRemaining: Int, val expected: String) {
     @Test
     fun test() {
         Assertions.assertThat(
-                context.remainingCardsHint(count = cardsRemaining)
+                DealCardsActivity.remainingCardsHint(context, cardsRemaining)
         )
                 .isEqualTo(expected)
     }

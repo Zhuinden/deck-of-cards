@@ -31,15 +31,15 @@ class ItemTest {
         )
 
         runTest(
-                old = UiDeck,
+                old = UiDeck(),
                 new = Card(Rank.QUEEN, Suit.CLUBS).toUi(),
                 sameContents = false,
                 sameItem = false
         )
 
         runTest(
-                old = UiDeck,
-                new = UiDeck,
+                old = UiDeck(),
+                new = UiDeck(),
                 sameContents = true,
                 sameItem = true
         )

@@ -65,7 +65,7 @@ class DealCardActivityTest {
         var state = DealCardsUi.State.NO_CARDS_DEALT
 
         val deck = state.deck.withDealtCard()
-        state = state.copy(deck = deck)
+        state = state.toBuilder().setDeck(deck).build()
 
         assert(deck.remaining.size == 51)
         delegate = Delegate(activityRule, state)
@@ -137,8 +137,8 @@ class DealCardActivityTest {
     fun loading_ui_shows_dealing() {
         val test = LoadingUiTestDelegate(
                 rule = activityRule,
-                loadingChange = IsDealing,
-                completeChange = DealingComplete
+                loadingChange = IsDealing(),
+                completeChange = DealingComplete()
         )
 
         test.run()
@@ -148,8 +148,8 @@ class DealCardActivityTest {
     fun loading_ui_shows_shuffling() {
         val test = LoadingUiTestDelegate(
                 rule = activityRule,
-                loadingChange = IsShuffling,
-                completeChange = ShuffleComplete
+                loadingChange = IsShuffling(),
+                completeChange = ShuffleComplete()
         )
 
         test.run()
@@ -159,7 +159,7 @@ class DealCardActivityTest {
     fun error_shows() {
         val error = Error(null, "An unknown error occurred")
         val withError = DealCardsUi.State.EVERY_CARD_DEALT.reduce(error)
-        val errorDismissed = DealCardsUi.State.EVERY_CARD_DEALT.reduce(DismissedError)
+        val errorDismissed = DealCardsUi.State.EVERY_CARD_DEALT.reduce(DismissedError())
         val test = Delegate(
                 rule = activityRule,
                 state = withError
@@ -172,8 +172,8 @@ class DealCardActivityTest {
     fun loading_ui_shows_building_new_deck() {
         val test = LoadingUiTestDelegate(
                 rule = activityRule,
-                loadingChange = IsBuildingDeck,
-                completeChange = BuildingDeckComplete
+                loadingChange = IsBuildingDeck(),
+                completeChange = BuildingDeckComplete()
         )
 
         test.run()
@@ -183,16 +183,16 @@ class DealCardActivityTest {
             activityRule: ActivityTestRule<DealCardsActivity>,
             val userIntent: Delegate.UserIntent
     ) {
-        private val buildingDeck = DealCardsUi.State.NO_CARDS_DEALT.reduce(IsBuildingDeck)
+        private val buildingDeck = DealCardsUi.State.NO_CARDS_DEALT.reduce(IsBuildingDeck())
 
         private val delegate by lazy {
             Delegate(rule = activityRule, state = DealCardsUi.State.NO_CARDS_DEALT.reduce(change))
         }
 
         val change = when (userIntent) {
-            DEAL_CARD -> IsBuildingDeck
-            SHUFFLE_DECK -> IsShuffling
-            BUILD_NEW_DECK -> IsBuildingDeck
+            DEAL_CARD -> IsBuildingDeck()
+            SHUFFLE_DECK -> IsShuffling()
+            BUILD_NEW_DECK -> IsBuildingDeck()
         }
 
         val relay = when (userIntent) {

@@ -7,7 +7,7 @@ ext.versions = [
         compileSdk                   : 25,
         buildTools                   : '25.0.2',
 
-        androidGradlePlugin          : '2.3.0',
+        androidGradlePlugin          : '2.3.3',
         aptGradlePlugin              : '1.8',
         javaAptGradlePlugin          : '0.6',
         retrolambdaGradlePlugin      : '3.2.5',

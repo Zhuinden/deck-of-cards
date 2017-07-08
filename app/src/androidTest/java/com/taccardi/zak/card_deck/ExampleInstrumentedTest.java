@@ -1,12 +1,12 @@
 package com.taccardi.zak.card_deck;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import android.support.test.filters.LargeTest;
 import android.support.test.filters.MediumTest;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Instrumentation test, which will execute on an Android device.

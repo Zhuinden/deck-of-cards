@@ -10,7 +10,7 @@ import org.junit.Test
 class SuitTest {
     @Test
     fun countStandardFour() {
-        val actualCount = Suit.count
+        val actualCount = Suit.count()
         val expected = 4
 
         assertThat(actualCount)
@@ -20,8 +20,8 @@ class SuitTest {
 
     @Test
     fun valuesNotDefensivelyCopied() {
-        val values1 = Suit.values
-        val values2 = Suit.values
+        val values1 = Suit.values()
+        val values2 = Suit.values()
 
         assertThat(values1)
                 .describedAs("Java defensively copies an array every time a EnumClass.values() is accessed. Don't pay that price every time")

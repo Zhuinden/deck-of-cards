@@ -1,13 +1,13 @@
-package com.taccardi.zak.card_deck.presentation.base
+package com.taccardi.zak.card_deck.presentation.base;
 
 /**
  * Responsible for rendering a view's state.
  */
-interface StateRenderer<in VS> {
+public interface StateRenderer<VIEWSTATE> {
 
     /**
      * Accepts a pojo representing the current state of the view in order to render it on to the screen of the user.
      * @param state state to render
      */
-    fun render(state: VS)
+    void render(VIEWSTATE state);
 }

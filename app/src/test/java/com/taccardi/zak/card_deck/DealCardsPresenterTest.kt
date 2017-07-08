@@ -1,5 +1,6 @@
 package com.taccardi.zak.card_deck
 
+import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import com.taccardi.zak.card_deck.presentation.deal_cards.DealCardsPresenter
@@ -45,9 +46,9 @@ class DealCardsPresenterTest {
         user = FakeIntentions()
         dealer = InMemoryDealer(trampoline)
         presenter = DealCardsPresenter(
-                intentions = user,
-                dealer = dealer,
-                ui = ui)
+                ui,
+                user,
+                dealer)
         presenter.start()
     }
 
@@ -77,66 +78,70 @@ class DealCardsPresenterTest {
 
     @Test
     fun dealing_operation_is_dealing() {
-        dealer.dealOperations.accept(DealOperation.Dealing)
+        (dealer.dealOperations as BehaviorRelay<DealOperation>).accept(DealOperation.Dealing())
         state!!.assertIsDealing()
     }
 
     @Test
     fun deal_operation_error() {
         val text = "An error occured"
-        dealer.dealOperations.accept(DealOperation.Error(text))
+        (dealer.dealOperations as BehaviorRelay<DealOperation>).accept(DealOperation.Error(text))
         state!!.assertError(text)
     }
 
     @Test
     fun deal_operation_success() {
         val kingOfHearts = Card(Rank.KING, Suit.HEARTS)
-        dealer.dealOperations.accept(DealOperation.TopCard(kingOfHearts))
+        (dealer.dealOperations as BehaviorRelay<DealOperation>).accept(DealOperation.TopCard(kingOfHearts))
         state!!.assertIsDealing(false)
     }
 
     @Test
     fun shuffle_operation_is_shuffling() {
-        dealer.shuffleOperations.accept(ShuffleOperation.Shuffling)
+        (dealer.shuffleOperations as BehaviorRelay<ShuffleOperation>).accept(ShuffleOperation.Shuffling())
         state!!.assertIsShuffling()
     }
 
     @Test
     fun shuffle_operation_error() {
         val text = "An error occurred while shuffling"
-        dealer.shuffleOperations.accept(ShuffleOperation.Error(text))
+        (dealer.shuffleOperations as BehaviorRelay<ShuffleOperation>).accept(ShuffleOperation.Error(text))
         state!!.assertError(text)
     }
 
     @Test
     fun shuffle_operation_success() {
-        val deck = Deck(remaining = listOf(Card(Rank.KING, Suit.HEARTS)), dealt = emptyList())
-        dealer.shuffleOperations.accept(ShuffleOperation.Shuffled(deck))
+        val deck = Deck(listOf(Card(Rank.KING, Suit.HEARTS)), emptyList())
+        (dealer.shuffleOperations as BehaviorRelay<ShuffleOperation>).accept(ShuffleOperation.Shuffled(deck))
         state!!.assertIsShuffling(false)
     }
 
     @Test
     fun building_deck_operation_is_building() {
-        dealer.buildingDeckOperations.accept(BuildingDeckOperation.Building)
+        (dealer.buildingDeckOperations as BehaviorRelay<BuildingDeckOperation>).accept(BuildingDeckOperation.Building())
         state!!.assertIsBuildingNewDeck(true)
     }
 
     @Test
     fun building_deck_operation_error() {
         val text = "An error occurred while building the new deck"
-        dealer.buildingDeckOperations.accept(BuildingDeckOperation.Error(text))
+        (dealer.buildingDeckOperations as BehaviorRelay<BuildingDeckOperation>).accept(BuildingDeckOperation.Error(text))
         state!!.assertError(text)
     }
 
     @Test
     fun building_deck_operation_success() {
         val deck = Deck.FRESH_DECK
-        dealer.buildingDeckOperations.accept(BuildingDeckOperation.Built(deck))
+        (dealer.buildingDeckOperations as BehaviorRelay<BuildingDeckOperation>).accept(BuildingDeckOperation.Built(deck))
         state!!.assertIsBuildingNewDeck(false)
     }
 
     private class FakeUi() : DealCardsUi {
-        override var state: DealCardsUi.State = DealCardsUi.State.NO_CARDS_DEALT
+        override fun getState(): DealCardsUi.State {
+            return state;
+        }
+
+        @JvmField var state: DealCardsUi.State = DealCardsUi.State.NO_CARDS_DEALT
 
         var states: MutableList<DealCardsUi.State> = ArrayList()
         val current get() = states.lastOrNull()
@@ -149,21 +154,21 @@ class DealCardsPresenterTest {
 
     private class FakeIntentions : DealCardsUi.Intentions {
 
-        private val dealCard: Relay<Unit> = PublishRelay.create()
-        private val shuffleDeckRequests: Relay<Unit> = PublishRelay.create()
-        private val newDeckRequests: Relay<Unit> = PublishRelay.create()
+        private val dealCard: Relay<Any> = PublishRelay.create()
+        private val shuffleDeckRequests: Relay<Any> = PublishRelay.create()
+        private val newDeckRequests: Relay<Any> = PublishRelay.create()
 
-        override fun dealCardRequests(): Observable<Unit> = dealCard
+        override fun dealCardRequests(): Observable<Any> = dealCard
 
-        override fun shuffleDeckRequests(): Observable<Unit> = shuffleDeckRequests
+        override fun shuffleDeckRequests(): Observable<Any> = shuffleDeckRequests
 
-        override fun newDeckRequests(): Observable<Unit> = newDeckRequests
+        override fun newDeckRequests(): Observable<Any> = newDeckRequests
 
-        fun dealCard() = dealCard.accept(Unit)
+        fun dealCard() = dealCard.accept(Object())
 
-        fun shuffleDeck() = shuffleDeckRequests.accept(Unit)
+        fun shuffleDeck() = shuffleDeckRequests.accept(Object())
 
-        fun newDeck() = newDeckRequests.accept(Unit)
+        fun newDeck() = newDeckRequests.accept(Object())
 
     }
 }

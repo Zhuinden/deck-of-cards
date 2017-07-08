@@ -11,7 +11,7 @@ class RankTest {
 
     @Test
     fun countWithoutJoker() {
-        val actualCount = Rank.count
+        val actualCount = Rank.count()
         val expected = 13
 
         assertThat(actualCount)
@@ -21,8 +21,8 @@ class RankTest {
 
     @Test
     fun valuesNotDefensivelyCopied() {
-        val values1 = Rank.values
-        val values2 = Rank.values
+        val values1 = Rank.values()
+        val values2 = Rank.values()
 
         assertThat(values1)
                 .describedAs("Java defensively copies an array every time a EnumClass.values() is accessed. Don't pay that price every time")
