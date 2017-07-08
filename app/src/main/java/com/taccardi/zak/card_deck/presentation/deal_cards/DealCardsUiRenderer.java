@@ -42,7 +42,8 @@ public class DealCardsUiRenderer
                 .subscribe(uiActions::showRemainingCards));
 
         Observable<List<CardsRecycler.Item>> itemObservable = state //
-                .map(DealCardsUi.State::getDealt).distinctUntilChanged() //
+                .map(DealCardsUi.State::getDealt) //
+                .distinctUntilChanged() //
                 .map((cards) -> { //
                     List<CardsRecycler.Item.UiCard> uiCards = new LinkedList<>();
                     for(Card card : cards) {
